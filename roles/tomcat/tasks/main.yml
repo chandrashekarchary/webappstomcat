@@ -1,0 +1,52 @@
+    - name: Creates directory
+      file: path=/opt/tomcat state=directory
+
+    - name: install epel-release
+      yum: name=epel-release state=present
+
+    - name: install required packages
+      yum: name={{item}} state=present
+      with_items:
+        - java
+        - httpd
+        - maven
+        - git
+        - java-1.8.0-openjdk-devel.x86_64
+        - mariadb-server
+
+    - name: service start 
+      service: name={{item}} state=started enabled=yes
+      with_items:
+        - httpd
+        - mariadb
+
+    - name: tomcat install
+      get_url: url=http://mirror.fibergrid.in/apache/tomcat/tomcat-8/v8.5.14/bin/apache-tomcat-8.5.14.tar.gz dest=/opt/tomcat
+    
+    - name: extract files
+      unarchive: copy=no src=/opt/tomcat/apache-tomcat-8.5.14.tar.gz  dest=/opt/tomcat
+
+    - name: file cpoy
+      template: src=/root/devops/catalina  dest=/etc/systemd/system/tomcat.service
+
+    - name: bash tomcat start
+      command: /opt/tomcat/apache-tomcat-8.5.14/bin/startup.sh
+
+    - name: user xml
+      template: src=/root/devops/tomcat-users.xml dest=/opt/tomcat/apache-tomcat-8.5.14/conf
+
+    - name: polyglot war file move
+      copy: src=/root/devops/roles/Polyglot.war dest=/opt/tomcat/apache-tomcat-8.5.14/webapps 
+
+    - name: mvn package
+      command: /opt/tomcat/apache-tomcat-8.5.14/bin/startup.sh
+
+#    - name: mysql secure
+#      command: mysqladmin -u root password 'default123' 
+
+#    - name: create database
+#      command: mysql -u root -p default123 -e 'create database polyglot; GRANT ALL PRIVILEGES ON polyglot.* TO 'polyglotUser'@'%' IDENTIFIED BY 'con02305''
+
+#     - name: dump database
+#       commmand: mysql -u root -p default123 polyglot < /root/devops/roles/polyglot_complete_dump.sql
+#

@@ -1,0 +1,31 @@
+---
+- name: create tomcat
+  group: name=tomcat state=present
+
+- name: create users
+  user: name=tomcat state=present group=tomcat shell=/bin/nologin home=/opt/tomcat
+
+- name: Make the tomcat user the owner of the webapps, work, temp, and logs directories
+  file:
+    path: /opt/tomcat
+    owner: tomcat
+    group: tomcat
+    recurse: true
+  with_items:
+    - webapps
+    - work
+    - temp
+    - logs
+
+- name: Grant Tomcat group read access to the conf directory
+  file:
+    path: /opt/tomcat
+    state: directory
+    mode: g+r
+    recurse: true
+
+#- name: Grant Tomcat group execute access to the conf directory itself
+#  file:
+#    path: "/opt/tomcat/conf"
+#    state: directory
+#    mode: g+x

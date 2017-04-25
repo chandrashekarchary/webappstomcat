@@ -1,0 +1,6 @@
+192.168.11.36 ansible_connection=ssh ansible_user=root ansible_ssh_pass=default123
+
+[web]
+192.168.11.36
+
+

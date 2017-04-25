@@ -1,0 +1,6 @@
+#- name: dump database
+#  command: mysql -u polyglotUser -p con02305 polyglot < /root/devops/roles/polyglot_complete_dump.sql
+
+- name: 9. Import data
+  mysql_db: name=polyglot state=import target=/root/devops/roles/polyglot_complete_dump.sql login_user='root'
+

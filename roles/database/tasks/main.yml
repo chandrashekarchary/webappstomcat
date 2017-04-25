@@ -1,0 +1,19 @@
+- name: Adds Python MySQL support on RedHat/CentOS
+  yum: name=MySQL-python state=present
+  when: ansible_os_family == 'RedHat'
+
+- name: Sets the root password 
+  mysql_user: login_user=root login_password='' name=root password=default123 login_unix_socket=/var/lib/mysql/mysql.sock
+
+- name: Create a new database with name 'polyglot'
+  mysql_db:
+    name: polyglot
+    login_user: root
+    login_password: default123
+    state: present
+
+- mysql_user:
+    name: polyglotUser
+    password: con02305
+    priv: '*.*:ALL'
+    state: present
